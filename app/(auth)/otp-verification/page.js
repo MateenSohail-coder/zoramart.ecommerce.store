@@ -9,7 +9,6 @@ export default function otpVerification() {
   const [pageloader, setpageloader] = useState(false);
   useEffect(() => {
     if (session?.user.isVerified === true) {
-      console.log("User is verified, redirecting...", session.user.isVerified);
       window.location.href = "/";
     } else {
       setpageloader(false);

@@ -54,7 +54,7 @@
 }
 
 :root {
-  --background: oklch(100% 0.00011 271.152);
+  --background: oklch(94.309% 0.00011 271.152);
   --foreground: #2d3235;
   --primary-main:#ff6f00;
   --card: oklch(1 0 0);
@@ -135,5 +135,15 @@
   }
   html {
     @apply font-sans;
+  }
+}
+@layer utilities {
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE/Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
   }
 }

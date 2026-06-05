@@ -3,6 +3,9 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/common/themeProvider";
 import Providers from "@/components/common/sessionProvider";
 import { Toaster } from "@/components/ui/sonner";
+import RTKProviders from "@/components/providers";
+import Navbar from "@/components/layouts/Navbar";
+import TopBar from "@/components/layouts/topBar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,7 +37,12 @@ export default function RootLayout({ children }) {
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <RTKProviders>
+              {/* <TopBar />
+              <Navbar /> */}
+
+              {children}
+            </RTKProviders>
             <Toaster
               richColors={true}
               closeButton={true}

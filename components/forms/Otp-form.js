@@ -50,7 +50,6 @@ export function OtpVerificationForm({ id }) {
   const onSubmit = async (data) => {
     setloading(true);
     const userid = session.user.id;
-    console.log(userid);
     if (!userid) {
       return null;
     }
@@ -92,15 +91,15 @@ export function OtpVerificationForm({ id }) {
                 src="/zMartDark.png"
                 alt="zMart"
                 fill={true}
-                loading="lazy"
-                className="bg-cover dark:visible"
+                loading="eager"
+                className="object-cover  hidden dark:inline"
               />
               <Image
                 src="/zMartLight.png"
                 alt="zMart"
                 fill={true}
-                loading="lazy"
-                className="bg-cover visible dark:hidden"
+                loading="eager"
+                className="object-cover inline dark:hidden"
               />
             </div>
           </Link>

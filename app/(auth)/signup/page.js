@@ -9,21 +9,22 @@ export default function SignupPage() {
     <div className="grid min-h-svh  lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-8">
         <div className="flex  justify-center items-center w-full">
-          <Link href="/">
-            <div className="relative h-11 w-30">
+          <Link href="/" className="order-1 flex shrink-0 items-center gap-3">
+            <div className="relative h-11 w-32 sm:w-36">
               <Image
                 src="/zMartDark.png"
                 alt="zMart"
-                fill={true}
-                loading="lazy"
-                className="object-cover hidden dark:block"
+                fill
+                priority
+                className="hidden object-contain dark:inline"
               />
+
               <Image
                 src="/zMartLight.png"
                 alt="zMart"
-                fill={true}
-                loading="lazy"
-                className="object-cover block dark:hidden"
+                fill
+                priority
+                className="object-contain dark:hidden"
               />
             </div>
           </Link>
@@ -36,7 +37,7 @@ export default function SignupPage() {
       </div>
       <div className="sticky border-l-8 border-l-neutral-300 dark:border-l-neutral-700 h-screen overflow-hidden top-0 hidden bg-muted lg:block">
         <img
-          src="/poster3.jfif"
+          src="/Signup-poster.jpeg"
           alt="Image"
           className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.9] "
         />
