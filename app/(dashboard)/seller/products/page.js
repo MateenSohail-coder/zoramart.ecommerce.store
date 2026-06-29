@@ -17,17 +17,22 @@ import { Skeleton } from "@/components/ui/skeleton";
 import SimpleTable from "../../_components/SimpleTable";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
 import { toast } from "sonner";
+import { Plus } from "lucide-react";
+import Link from "next/link";
 
 export default function SellerProductsPage() {
   const { data: session } = useSession();
   const [page, setPage] = React.useState(1);
   const [limit] = React.useState(10);
 
-  const { data, isLoading } = useGetProductsQuery({
-    page,
-    limit,
-    sellerId: session?.user?.id,
-  }, { skip: !session?.user?.id });
+  const { data, isLoading } = useGetProductsQuery(
+    {
+      page,
+      limit,
+      sellerId: session?.user?.id,
+    },
+    { skip: !session?.user?.id },
+  );
 
   const products = data?.products || [];
 
@@ -65,9 +70,17 @@ export default function SellerProductsPage() {
               Manage your inventory, pricing and listings
             </p>
           </div>
-
-          <div className="rounded-sm bg-white/20 px-4 py-2 text-sm font-medium">
-            {products.length} Items
+          <div className="flex items-center justify-center gap-2">
+            <Link
+              href="/seller/products/new"
+              className="rounded-sm  text-[#ff6f00] flex gap-3 items-center justify-center bg-white hover:bg-white/90 cursor-pointer active:scale-[0.96] px-4 py-2 text-sm font-medium"
+            >
+              <Plus />
+              Add Product
+            </Link>
+            <div className="rounded-sm bg-white/20 px-4 py-2 text-sm font-medium">
+              {products.length} Items
+            </div>
           </div>
         </div>
       </div>

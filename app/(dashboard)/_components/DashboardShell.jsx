@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 import { useGetOrdersQuery } from "@/features/order/orderApi";
 
@@ -16,11 +17,28 @@ import {
 
 export default function DashboardShell({ role, children }) {
   const pathname = usePathname();
+  const { data: session, status } = useSession();
 
-  const { data } = useGetOrdersQuery({
-    page: 1,
-    limit: 1,
-  });
+  const verified = session?.user?.isVerified;
+  const shouldRedirect = status !== "loading" && (!session?.user || !verified);
+
+  const { data } = useGetOrdersQuery(
+    { page: 1, limit: 1 },
+    { skip: shouldRedirect },
+  );
+
+  React.useEffect(() => {
+    if (!shouldRedirect) return;
+    window.location.href = "/login";
+  }, [shouldRedirect]);
+
+  if (shouldRedirect) {
+    return (
+      <div className="flex h-screen items-center justify-center font-dmsans">
+        <p className="text-sm text-muted-foreground">Redirecting to login...</p>
+      </div>
+    );
+  }
 
   const notificationCount = Array.isArray(data?.orders) ? data.orders.length : 0;
 

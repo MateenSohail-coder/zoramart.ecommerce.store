@@ -34,6 +34,13 @@ export async function GET(req) {
     const slug = searchParams.get("slug");
     const main = searchParams.get("main");
     const parentId = searchParams.get("parentId");
+    const all = searchParams.get("all");
+
+    // All categories (for admin panel tree view)
+    if (all === "true") {
+      const allCategories = await Category.find({}).sort({ level: 1, name: 1 }).lean();
+      return NextResponse.json(allCategories);
+    }
 
     if (slug) {
       const category = await Category.findOne({ slug }).lean();
@@ -118,6 +125,14 @@ export async function PUT(req) {
   }
 }
 
+async function deleteCategoryWithDescendants(id) {
+  const subs = await Category.find({ parentCategory: id });
+  for (const sub of subs) {
+    await deleteCategoryWithDescendants(sub._id);
+  }
+  await Category.findByIdAndDelete(id);
+}
+
 export async function DELETE(req) {
   try {
     const user = await getAuthUser();
@@ -133,15 +148,7 @@ export async function DELETE(req) {
 
     await connectDB();
 
-    const childCount = await Category.countDocuments({ parentCategory: id });
-    if (childCount > 0) {
-      return NextResponse.json(
-        { message: "Cannot delete category with subcategories" },
-        { status: 400 },
-      );
-    }
-
-    await Category.findByIdAndDelete(id);
+    await deleteCategoryWithDescendants(id);
 
     return NextResponse.json({ message: "Category deleted successfully" });
   } catch (error) {

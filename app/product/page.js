@@ -207,6 +207,17 @@ function ProductDetailContent() {
 
   return (
     <div className="min-h-screen bg-background text-foreground py-10 px-4 md:px-8 max-w-7xl mx-auto space-y-20">
+      {session?.user?.role === "seller" && (
+        <div className="flex justify-end">
+          <Button
+            onClick={() => router.push("/seller/products/new")}
+            className="bg-[#ff6f00] hover:bg-[#e66400] rounded-lg gap-2"
+          >
+            <ShoppingBag className="w-4 h-4" />
+            New Product
+          </Button>
+        </div>
+      )}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
         <motion.div
           initial={{ opacity: 0, y: 15 }}

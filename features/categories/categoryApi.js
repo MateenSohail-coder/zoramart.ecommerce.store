@@ -6,16 +6,22 @@ export const categoryApi = createApi({
   tagTypes: ["Categories"],
   endpoints: (builder) => ({
     getCategories: builder.query({
-      query: (id) => (id ? `/categories?id=${id}` : "/categories"),
-      providesTags: (result, error, id) => [
-        { type: "Categories", id: id || "LIST" },
-      ],
+      query: (args) => {
+        if (!args) return "/categories";
+        if (typeof args === "string") return `/categories?id=${args}`;
+        const params = new URLSearchParams();
+        Object.entries(args).forEach(([k, v]) => {
+          if (v !== undefined && v !== null && v !== "") params.set(k, v);
+        });
+        const qs = params.toString();
+        return `/categories${qs ? `?${qs}` : ""}`;
+      },
+      providesTags: [{ type: "Categories", id: "LIST" }],
     }),
 
     getCategoryBySlug: builder.query({
       query: (slug) => `/categories?slug=${encodeURIComponent(slug)}`,
-      providesTags: (result) =>
-        result?._id ? [{ type: "Categories", id: result._id }] : [],
+      providesTags: [{ type: "Categories", id: "LIST" }],
     }),
 
     addProduct: builder.mutation({
@@ -25,33 +31,7 @@ export const categoryApi = createApi({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(productData),
       }),
-      async onQueryStarted(productData, { dispatch, queryFulfilled }) {
-        const currentTempId = `temp_${Date.now()}`;
-        const patchResult = dispatch(
-          categoryApi.util.updateQueryData(
-            "getCategories",
-            productData.parentCategory || undefined,
-            (draft) => {
-              draft.push({ _id: currentTempId, ...productData });
-            },
-          ),
-        );
-        try {
-          const { data: newProduct } = await queryFulfilled;
-          dispatch(
-            categoryApi.util.updateQueryData(
-              "getCategories",
-              productData.parentCategory || undefined,
-              (draft) => {
-                const index = draft.findIndex((t) => t._id === currentTempId);
-                if (index !== -1) draft[index] = newProduct;
-              },
-            ),
-          );
-        } catch {
-          patchResult.undo();
-        }
-      },
+      invalidatesTags: [{ type: "Categories", id: "LIST" }],
     }),
 
     deleteCategories: builder.mutation({
@@ -59,7 +39,7 @@ export const categoryApi = createApi({
         url: `/categories?id=${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Categories"],
+      invalidatesTags: [{ type: "Categories", id: "LIST" }],
     }),
 
     updateCategories: builder.mutation({
@@ -69,7 +49,7 @@ export const categoryApi = createApi({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, name, parentCategory }),
       }),
-      invalidatesTags: ["Categories"],
+      invalidatesTags: [{ type: "Categories", id: "LIST" }],
     }),
   }),
 });

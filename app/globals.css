@@ -132,9 +132,10 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'DM Sans', sans-serif !important;
   }
   html {
-    @apply font-sans;
+    font-family: 'DM Sans', sans-serif !important;
   }
 }
 @layer utilities {

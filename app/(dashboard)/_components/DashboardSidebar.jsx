@@ -21,6 +21,7 @@ import {
   Boxes,
   Store,
   LogOut,
+  FolderTree,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -178,6 +179,11 @@ export default function DashboardSidebar({ role = "seller", children }) {
             title: "Products",
             url: "/admin/products",
             icon: Package,
+          },
+          {
+            title: "Categories",
+            url: "/admin/categories",
+            icon: FolderTree,
           },
           {
             title: "Orders",

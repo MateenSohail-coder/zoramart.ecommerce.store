@@ -57,6 +57,7 @@ export function OtpVerificationForm({ id }) {
       const res = await verifyOtp(userid, data.code);
       if (!res.ok) {
         toast.error(res.message);
+        return;
       }
       const apiResponse = await axios.put(`/api/auth/signup?userId=${userid}`, {
         isVerified: true,
@@ -65,6 +66,8 @@ export function OtpVerificationForm({ id }) {
         setisCorrect(true);
         toast.success("Verification successful!");
         await update({ isVerified: true });
+        // Brief delay so the session cookie propagates before navigation
+        await new Promise((r) => setTimeout(r, 300));
         window.location.href =
           session.user.role === "seller" ? "/seller-onboarding" : "/";
       }

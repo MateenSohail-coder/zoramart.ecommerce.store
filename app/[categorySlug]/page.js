@@ -3,7 +3,10 @@
 import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 
-import { useGetCategoriesQuery, useGetCategoryBySlugQuery } from "@/features/categories/categoryApi";
+import {
+  useGetCategoriesQuery,
+  useGetCategoryBySlugQuery,
+} from "@/features/categories/categoryApi";
 import { useGetProductsQuery } from "@/features/product/productApi";
 
 import ProductCard from "@/components/ui/ProductCard";
@@ -14,6 +17,7 @@ import {
   ChevronRight,
   TrendingUp,
   TrendingDown,
+  PackageX,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -54,9 +58,11 @@ function CategoryPageContent() {
 
   const limit = 5;
 
-  const sidebarCategoryId = parentId || effectiveCategoryId;
-  const { data: categories = [], isLoading: categoryLoading } =
-    useGetCategoriesQuery(sidebarCategoryId);
+  const { data: allCategories = [], isLoading: categoryLoading } =
+    useGetCategoriesQuery({ all: "true" });
+  const categories = allCategories.filter(
+    (c) => String(c.parentCategory) === String(parentId || effectiveCategoryId),
+  );
 
   const { data, isLoading, isFetching } = useGetProductsQuery({
     categoryId: effectiveCategoryId,
@@ -289,8 +295,9 @@ function CategoryPageContent() {
           {/* Empty State */}
 
           {!isLoading && sortedProducts.length === 0 && (
-            <Card className="mt-8 rounded-2xl">
-              <CardContent className="py-12 text-center">
+            <Card className="mt-8  rounded-2xl">
+              <CardContent className="py-12 flex flex-col items-center justify-center gap-3 text-center">
+                <PackageX className="h-10 w-10 opacity-40" />
                 <h3 className="font-semibold text-lg">No Products Found</h3>
 
                 <p className="text-muted-foreground mt-2">

@@ -40,12 +40,15 @@ export default async function middleware(req) {
   const token = await getToken({ req, secret: process.env.AUTH_SECRET });
   const role = token?.role;
 
+  // Allow unverified users to access /otp-verification (don't bounce to dashboard)
+  const isOtpPage = pathname === "/otp-verification";
+
   const isAuthPage =
     pathname === "/login" ||
     pathname === "/signup" ||
-    pathname === "/otp-verification";
+    isOtpPage;
 
-  if (isAuthPage && token) {
+  if (isAuthPage && token && !isOtpPage) {
     const config = ROLECONFIG[role];
     const url = req.nextUrl.clone();
     url.pathname = config?.home || "/";

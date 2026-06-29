@@ -31,13 +31,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function SellerCreateProductPage() {
   const { data: session } = useSession();
-  const { data: categoriesData, isLoading: categoriesLoading } =
-    useGetCategoriesQuery();
+  const { data: allCategoriesData, isLoading: categoriesLoading } =
+    useGetCategoriesQuery({ all: "true" });
 
   const [addProduct, { isLoading }] = useAddProductMutation();
   const [uploading, setUploading] = React.useState(false);
 
-  const categories = Array.isArray(categoriesData) ? categoriesData : [];
+  const allCategories = Array.isArray(allCategoriesData) ? allCategoriesData : [];
+  const categories = allCategories.filter((c) => !c.parentCategory);
 
   const [form, setForm] = React.useState({
     name: "",
@@ -52,10 +53,9 @@ export default function SellerCreateProductPage() {
   });
 
   const mainCategoryId = form.category || undefined;
-  const { data: subcategoriesData, isLoading: subsLoading } =
-    useGetCategoriesQuery(mainCategoryId, { skip: !mainCategoryId });
-
-  const subcategories = Array.isArray(subcategoriesData) ? subcategoriesData : [];
+  const subcategories = mainCategoryId
+    ? allCategories.filter((c) => String(c.parentCategory) === String(mainCategoryId))
+    : [];
 
   const [images, setImages] = React.useState([null, null, null, null]);
 
@@ -272,7 +272,7 @@ export default function SellerCreateProductPage() {
             )}
 
             {/* SUB CATEGORY */}
-            {subsLoading ? (
+            {categoriesLoading ? (
               <Skeleton className="h-10 w-full" />
             ) : (
               <Select

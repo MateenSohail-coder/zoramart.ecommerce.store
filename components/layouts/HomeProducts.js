@@ -85,22 +85,23 @@ export default function HomeProducts() {
         error && items.length === 0 ? (
           <div className="col-span-full flex flex-col items-center gap-3 py-16 text-muted-foreground">
             <PackageX className="h-10 w-10 opacity-40" />
-            <p className="text-sm">
+            <p className="text-sm font-dmsans">
               Failed to load products. Please try again.
             </p>
             <Button
               variant="outline"
               size="sm"
               onClick={() => setPage(1)}
-              className="mt-1 border-[#ff6f00]/30 text-[#ff6f00] hover:bg-[#ff6f00] hover:text-white"
+              className="mt-1 border-[#ff6f00]/30 font-dmsans text-[#ff6f00] hover:bg-[#ff6f00] hover:text-white"
             >
               Retry
             </Button>
           </div>
         ) : /* ── CASE 3: Loaded but empty ── */
         !isLoading && items.length === 0 ? (
-          <div className="col-span-full text-center py-12 text-muted-foreground text-sm">
-            No products found.
+          <div className="col-span-full flex flex-col items-center gap-3 py-16 text-muted-foreground">
+            <PackageX className="h-10 w-10 opacity-40" />
+            <p className="text-sm font-dmsans">No Product Found .</p>
           </div>
         ) : (
           /* ── CASE 4: Normal render — existing items + optional load-more skeletons ── */
