@@ -1,4 +1,5 @@
 "use client";
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Footer from "@/components/layouts/Footer";
 import HeroSection from "@/components/layouts/heroSection";
@@ -8,7 +9,7 @@ import SearchResults from "@/components/layouts/SearchResults";
 import Navbar from "@/components/layouts/Navbar";
 import TopBar from "@/components/layouts/topBar";
 
-export default function Home() {
+function HomeContent() {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("search");
 
@@ -27,5 +28,19 @@ export default function Home() {
       )}
       <Footer />
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex h-screen items-center justify-center">
+          <div className="h-8 w-8 animate-pulse rounded-full bg-muted" />
+        </div>
+      }
+    >
+      <HomeContent />
+    </Suspense>
   );
 }

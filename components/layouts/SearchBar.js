@@ -1,13 +1,14 @@
 "use client";
 
 import * as React from "react";
+import { Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-export default function SearchBar() {
+function SearchBarInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -63,5 +64,17 @@ export default function SearchBar() {
         <Search className="h-4 w-4" />
       </Button>
     </div>
+  );
+}
+
+export default function SearchBar() {
+  return (
+    <Suspense
+      fallback={
+        <div className="h-10 w-full max-w-xl animate-pulse rounded-lg bg-muted" />
+      }
+    >
+      <SearchBarInner />
+    </Suspense>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
@@ -21,6 +22,22 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function CartPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="mx-auto max-w-4xl space-y-6 px-4 py-10">
+          <Skeleton className="h-12 w-48" />
+          <Skeleton className="h-32 w-full rounded-xl" />
+          <Skeleton className="h-32 w-full rounded-xl" />
+        </div>
+      }
+    >
+      <CartContent />
+    </Suspense>
+  );
+}
+
+function CartContent() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { data: cart, isLoading } = useGetCartQuery(undefined, {
