@@ -19,8 +19,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "ZoraMart - Ecommerce Platform",
-  description: "ZoraMart - Ecommerce Platform",
+  title: {
+    default: "ZoraMart — Shop Smarter, Live Better",
+    template: "%s | ZoraMart",
+  },
+  description:
+    "Discover premium products at unbeatable prices. ZoraMart is your trusted online marketplace for fashion, electronics, home goods & more — with fast delivery across Pakistan.",
 };
 
 export default function RootLayout({ children }) {
