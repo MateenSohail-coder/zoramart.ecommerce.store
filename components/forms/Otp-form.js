@@ -65,7 +65,8 @@ export function OtpVerificationForm({ id }) {
         setisCorrect(true);
         toast.success("Verification successful!");
         await update({ isVerified: true });
-        window.location.href = "/";
+        window.location.href =
+          session.user.role === "seller" ? "/seller-onboarding" : "/";
       }
     } catch {
       toast.error("somthing wrong");

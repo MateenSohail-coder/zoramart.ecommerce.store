@@ -12,7 +12,7 @@ export default function ImageZoom({
   src,
   zoomSrc,
   zoomType = "hover",
-  zoomScale = 1.5,
+  zoomScale = 1,
   zoomPreload = true,
   width,
   height,

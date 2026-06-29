@@ -1,3 +1,4 @@
+import Footer from "@/components/layouts/Footer";
 import Navbar from "@/components/layouts/Navbar";
 
 export const metadata = {
@@ -7,9 +8,10 @@ export const metadata = {
 
 export default function ProductPageLayout({ children }) {
   return (
-    <main>
+    <main className="font-dmsans">
       <Navbar />
       {children}
+      <Footer />
     </main>
   );
 }

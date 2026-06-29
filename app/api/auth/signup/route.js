@@ -20,7 +20,7 @@ export async function POST(req) {
       email: email,
       password: hashP,
       role: role,
-      isVerfied: false,
+      isVerified: false,
       isBlocked: false,
     });
     return NextResponse.json(

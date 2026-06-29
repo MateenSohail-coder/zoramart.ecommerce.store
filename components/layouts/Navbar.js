@@ -36,17 +36,52 @@ import {
   Dumbbell,
   Sparkles,
   Tag,
+  LayoutDashboard,
 } from "lucide-react";
 
 import { useTheme } from "next-themes";
+import { useSession, signOut } from "next-auth/react";
 import { useGetCategoriesQuery } from "@/features/categories/categoryApi";
+import { useGetCartQuery } from "@/features/cart/cartApi";
+import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "../ui/skeleton";
+import SearchBar from "./SearchBar";
 
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
+  const { data: session, status } = useSession();
   const [catOpen, setCatOpen] = React.useState(false);
-  const { data: categories, isLoading: categoriesLoader } =
-    useGetCategoriesQuery();
+  const {
+    data: categories,
+    isLoading: categoriesLoader,
+    isError: categoriesError,
+  } = useGetCategoriesQuery();
+
+  const safeCategories = Array.isArray(categories) ? categories : [];
+
+  const { data: cartData } = useGetCartQuery(undefined, {
+    skip: status !== "authenticated",
+  });
+  const cartCount = cartData?.items?.length || 0;
+
+  const user = session?.user;
+  const initials = user?.name
+    ? user.name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
+    : "?";
+
+  const dashboardUrl =
+    user?.role === "admin"
+      ? "/admin/overview"
+      : user?.role === "seller"
+        ? "/seller/overview"
+        : user?.role === "buyer"
+          ? "/user/overview"
+          : null;
 
   return (
     <nav className="border-b z-[1000]  sticky top-0 border-black/5 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-xl dark:border-white/10 dark:bg-[#0f1419] dark:shadow-[0_8px_30px_rgb(0,0,0,0.25)]">
@@ -74,16 +109,7 @@ export default function Navbar() {
 
         {/* SEARCH */}
         <div className="order-3 flex w-full flex-1 items-center justify-center md:order-2 md:w-auto">
-          <div className="relative w-full max-w-xl">
-            <Input
-              placeholder="Search products, brands, categories..."
-              className="h-10 w-full rounded-lg border border-black/10 bg-[#f8f8f8] pl-14 pr-4 text-sm shadow-sm outline-none transition-all placeholder:text-black/40 focus:border-[#ff6f00] focus:ring-2 focus:ring-[#ff6f00] dark:border-white/10 dark:bg-white/5 dark:placeholder:text-white/35"
-            />
-
-            <div className="pointer-events-none absolute left-0 top-0 flex h-full w-12 items-center justify-center rounded-l-lg bg-[#ff6f00]">
-              <Search className="h-5 w-5 text-white" />
-            </div>
-          </div>
+          <SearchBar />
         </div>
 
         {/* ACTIONS */}
@@ -92,9 +118,17 @@ export default function Navbar() {
           <Button
             variant="ghost"
             size="icon"
-            className="inline-flex h-11 w-11 rounded-full border border-black/10 bg-white hover:bg-[#ff6f00]/10 hover:text-[#ff6f00] dark:border-white/10 dark:bg-white/5 dark:hover:bg-[#ff6f00]/15"
+            asChild
+            className="relative inline-flex h-11 w-11 rounded-full border border-black/10 bg-white hover:bg-[#ff6f00]/10 hover:text-[#ff6f00] dark:border-white/10 dark:bg-white/5 dark:hover:bg-[#ff6f00]/15"
           >
-            <ShoppingCart className="h-5 w-5" />
+            <Link href="/cart">
+              <ShoppingCart className="h-5 w-5" />
+              {cartCount > 0 && (
+                <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#ff6f00] px-1 text-[10px] font-bold text-white">
+                  {cartCount > 99 ? "99+" : cartCount}
+                </span>
+              )}
+            </Link>
           </Button>
 
           {/* THEME */}
@@ -109,74 +143,90 @@ export default function Navbar() {
             <Moon className="hidden h-5 w-5 dark:inline-block" />
           </Button>
 
-          {/* USER MENU */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Avatar className="h-10 w-10 cursor-pointer ring-2 ring-transparent transition-all hover:ring-[#ff6f00]/20">
-                <AvatarImage src="https://github.com/shadcn.png" />
+          {/* USER MENU — only show when authenticated */}
+          {status === "authenticated" && user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Avatar className="h-10 w-10 cursor-pointer ring-2 ring-transparent transition-all hover:ring-[#ff6f00]/20">
+                  <AvatarImage src={user.image || undefined} />
+                  <AvatarFallback className="bg-[#ff6f00] font-semibold text-white">
+                    {initials}
+                  </AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
 
-                <AvatarFallback className="bg-[#ff6f00] font-semibold text-white">
-                  HM
-                </AvatarFallback>
-              </Avatar>
-            </DropdownMenuTrigger>
-
-            <DropdownMenuContent
-              align="end"
-              className="w-64 rounded-sm border z-[1200] border-black/10 bg-white/95 p-2 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-[#12181e]/95"
-            >
-              <DropdownMenuLabel className="px-3 py-2">
-                <div className="flex items-center gap-3">
-                  <Avatar className="h-11 w-11">
-                    <AvatarImage src="https://github.com/shadcn.png" />
-
-                    <AvatarFallback className="bg-[#ff6f00] text-white">
-                      HM
-                    </AvatarFallback>
-                  </Avatar>
-
-                  <div>
-                    <p className="text-sm font-semibold text-[#2d3235] dark:text-white">
-                      Abdul Mateen
-                    </p>
-
-                    <p className="text-xs text-black/50 dark:text-white/45">
-                      mateen@example.com
-                    </p>
+              <DropdownMenuContent
+                align="end"
+                className="w-64 rounded-sm border z-[1200] border-black/10 bg-white/95 p-2 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-[#12181e]/95"
+              >
+                <DropdownMenuLabel className="px-3 py-2">
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-11 w-11">
+                      <AvatarImage src={user.image || undefined} />
+                      <AvatarFallback className="bg-[#ff6f00] text-white">
+                        {initials}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="text-sm font-semibold text-[#2d3235] dark:text-white">
+                        {user.name || "User"}
+                      </p>
+                      <p className="text-xs text-black/50 dark:text-white/45">
+                        {user.email || ""}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </DropdownMenuLabel>
+                </DropdownMenuLabel>
 
-              <DropdownMenuSeparator className="bg-black/10 dark:bg-white/10" />
+                <DropdownMenuSeparator className="bg-black/10 dark:bg-white/10" />
 
-              <DropdownMenuItem className="cursor-pointer rounded-sm px-3 py-2.5 focus:bg-[#ff6f00]/10 focus:text-[#ff6f00]">
-                <User className="mr-3 h-4 w-4" />
-                Profile
-              </DropdownMenuItem>
+                {dashboardUrl && (
+                  <DropdownMenuItem
+                    className="cursor-pointer rounded-sm px-3 py-2.5 focus:bg-[#ff6f00]/10 focus:text-[#ff6f00]"
+                    asChild
+                  >
+                    <Link href={dashboardUrl}>
+                      <LayoutDashboard className="mr-3 h-4 w-4" />
+                      Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                )}
 
-              <DropdownMenuItem className="cursor-pointer rounded-sm px-3 py-2.5 focus:bg-[#ff6f00]/10 focus:text-[#ff6f00]">
-                <Settings className="mr-3 h-4 w-4" />
-                Settings
-              </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer rounded-sm px-3 py-2.5 focus:bg-[#ff6f00]/10 focus:text-[#ff6f00]"
+                  asChild
+                >
+                  <Link href="/user/orders">
+                    <Package className="mr-3 h-4 w-4" />
+                    My Orders
+                  </Link>
+                </DropdownMenuItem>
 
-              <DropdownMenuItem className="cursor-pointer rounded-sm px-3 py-2.5 focus:bg-[#ff6f00]/10 focus:text-[#ff6f00]">
-                <Package className="mr-3 h-4 w-4" />
-                My Orders
-              </DropdownMenuItem>
+                <DropdownMenuSeparator className="bg-black/10 dark:bg-white/10" />
 
-              <DropdownMenuItem className="cursor-pointer rounded-sm px-3 py-2.5 focus:bg-[#ff6f00]/10 focus:text-[#ff6f00]">
-                <Heart className="mr-3 h-4 w-4" />
-                Wishlist
-              </DropdownMenuItem>
-
-              <DropdownMenuSeparator className="bg-black/10 dark:bg-white/10" />
-
-              <DropdownMenuItem className="cursor-pointer rounded-sm px-3 py-2.5 text-red-600 focus:bg-red-50 focus:text-red-600 dark:focus:bg-red-500/10">
-                <LogOut className="mr-3 h-4 w-4" />
-                Logout
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                <DropdownMenuItem
+                  className="cursor-pointer rounded-sm px-3 py-2.5 text-red-600 focus:bg-red-50 focus:text-red-600 dark:focus:bg-red-500/10"
+                  onClick={() => signOut({ callbackUrl: "/" })}
+                >
+                  <LogOut className="mr-3 h-4 w-4" />
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : status === "loading" ? (
+            <div className="h-10 w-10 rounded-full bg-muted animate-pulse" />
+          ) : (
+            <Button
+              variant="ghost"
+              asChild
+              className="h-11 rounded-full font-dmsans border border-black/10 bg-white hover:bg-[#ff6f00]/10 hover:text-[#ff6f00] dark:border-white/10 dark:bg-white/5 dark:hover:bg-[#ff6f00]/15"
+            >
+              <Link href="/login">
+                <User className="mr-2 h-4 w-4" />
+                Sign In
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
       <div className="border-t border-black/5 bg-white/50 backdrop-blur-xl dark:border-white/10 dark:bg-[#0b1015]/0">
@@ -213,12 +263,14 @@ export default function Navbar() {
                           <Skeleton className="h-6 w-full rounded-sm" />
                         </DropdownMenuItem>
                       ))
-                    : categories.map((cat) => (
+                    : safeCategories.map((cat) => (
                         <DropdownMenuItem
                           key={cat.name}
                           className="cursor-pointer"
                         >
-                          <Link href={`/${cat.slug}?id=${cat._id}`}>
+                          <Link
+                            href={`/${cat.slug}?id=${cat._id}&main=true&parentId=${cat._id}`}
+                          >
                             {cat.name}
                           </Link>
                         </DropdownMenuItem>

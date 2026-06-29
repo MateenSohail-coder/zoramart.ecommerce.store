@@ -3,14 +3,35 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const productApi = createApi({
   reducerPath: "productApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "/api/core" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "/api/core", credentials: "include" }),
   tagTypes: ["Products"],
   endpoints: (builder) => ({
     getProducts: builder.query({
-      query: ({ categoryId, page = 1, limit = 10 }) =>
-        categoryId
-          ? `/products?categoryid=${categoryId}&page=${page}&limit=${limit}`
-          : `/products?page=${page}&limit=${limit}`,
+      query: ({
+        categoryId,
+        sellerId,
+        page = 1,
+        limit = 10,
+        sort,
+        order,
+        minPrice,
+        maxPrice,
+        inStock,
+        search,
+      }) => {
+        const params = new URLSearchParams();
+        if (categoryId) params.set("categoryid", categoryId);
+        if (sellerId) params.set("sellerId", sellerId);
+        params.set("page", String(page));
+        params.set("limit", String(limit));
+        if (sort) params.set("sort", sort);
+        if (order) params.set("order", order);
+        if (minPrice !== undefined) params.set("minPrice", String(minPrice));
+        if (maxPrice !== undefined) params.set("maxPrice", String(maxPrice));
+        if (inStock !== undefined) params.set("inStock", String(inStock));
+        if (search) params.set("search", search);
+        return `/products?${params.toString()}`;
+      },
 
       // ✅ Tag includes page so each page has its own cache entry.
       // When you invalidate "Products" by categoryId (or GLOBAL), ALL pages are
@@ -18,18 +39,28 @@ export const productApi = createApi({
       providesTags: (result, error, arg) => [
         {
           type: "Products",
-          id: `${arg.categoryId || "GLOBAL"}-page-${arg.page}`,
+          id: `${arg?.categoryId || "GLOBAL"}-page-${arg?.page || 1}-sort-${arg?.sort || "createdAt"}-order-${arg?.order || "desc"}-min-${arg?.minPrice ?? ""}-max-${arg?.maxPrice ?? ""}-stock-${arg?.inStock ?? ""}-q-${arg?.search || ""}`,
         },
-        // Also tag the "list" so you can invalidate all pages at once
         {
           type: "Products",
-          id: arg.categoryId || "GLOBAL",
+          id: arg?.categoryId || "GLOBAL",
         },
       ],
 
       // ✅ Keep previous page data in the cache while next page fetches.
       // This is what enables smooth "append" UX without blanking the grid.
-      keepUnusedDataFor: 300, // 5 minutes — tune to your needs
+      keepUnusedDataFor: 300,
+    }),
+
+    getProduct: builder.query({
+      query: ({ id, slug } = {}) => {
+        const params = new URLSearchParams();
+        if (id) params.set("id", id);
+        if (slug) params.set("slug", slug);
+        return `/products?${params.toString()}`;
+      },
+      providesTags: (result) =>
+        result?._id ? [{ type: "Products", id: result._id }] : [],
     }),
 
     addProduct: builder.mutation({
@@ -90,6 +121,7 @@ export const productApi = createApi({
 
 export const {
   useGetProductsQuery,
+  useGetProductQuery,
   useAddProductMutation,
   useDeleteProductsMutation,
   useUpdateProductsMutation,

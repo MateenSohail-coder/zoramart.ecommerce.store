@@ -53,8 +53,5 @@ productSchema.index({ category: 1 });
 productSchema.index({ seller: 1 });
 productSchema.index({ price: 1 });
 productSchema.index({ name: "text", description: "text" });
-if (mongoose.models.Product) {
-  // Correct way to clear a model from the cache
-  delete mongoose.connection.models["Product"];
-}
-export default mongoose.model("Product", productSchema);
+
+export default mongoose.models.Product || mongoose.model("Product", productSchema);

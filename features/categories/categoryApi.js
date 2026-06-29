@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const categoryApi = createApi({
   reducerPath: "categoryApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "/api/core" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "/api/core", credentials: "include" }),
   tagTypes: ["Categories"],
   endpoints: (builder) => ({
     getCategories: builder.query({
@@ -10,6 +10,12 @@ export const categoryApi = createApi({
       providesTags: (result, error, id) => [
         { type: "Categories", id: id || "LIST" },
       ],
+    }),
+
+    getCategoryBySlug: builder.query({
+      query: (slug) => `/categories?slug=${encodeURIComponent(slug)}`,
+      providesTags: (result) =>
+        result?._id ? [{ type: "Categories", id: result._id }] : [],
     }),
 
     addProduct: builder.mutation({
@@ -70,6 +76,7 @@ export const categoryApi = createApi({
 
 export const {
   useGetCategoriesQuery,
+  useGetCategoryBySlugQuery,
   useAddProductMutation,
   useDeleteCategoriesMutation,
   useUpdateCategoriesMutation,

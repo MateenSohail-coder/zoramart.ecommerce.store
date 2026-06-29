@@ -69,7 +69,7 @@ export default function HomeProducts() {
 
         <Button
           variant="ghost"
-          className="group self-start sm:self-auto text-[#ff6f00] hover:text-[#e96400] hover:bg-[#ff6f00]/8 font-semibold text-sm"
+          className="group self-start font-dmsans sm:self-auto text-[#ff6f00] hover:text-[#e96400] hover:bg-[#ff6f00]/8 font-semibold text-sm"
         >
           View All
           <ArrowRight className="ml-1.5 h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
@@ -108,10 +108,12 @@ export default function HomeProducts() {
             {items.map((product) => (
               <ProductCard
                 key={product._id}
+                id={product._id}
+                slug={product.slug}
                 name={product.name}
                 price={product.price}
                 originalPrice={product.downprice}
-                discount={product.discount || "20%"}
+                image={product.images?.[0]}
                 rating={product.rating || 4.5}
                 reviews={product.reviews || 0}
                 badge="Bestseller"
@@ -139,10 +141,10 @@ export default function HomeProducts() {
             onClick={() => setPage((p) => p + 1)}
             disabled={isFetching}
             variant="outline"
-            className="rounded-xl border-[#ff6f00]/30 px-6 text-sm font-semibold text-[#ff6f00] hover:bg-[#ff6f00] hover:text-white hover:border-[#ff6f00] transition-all duration-200 shadow-sm disabled:opacity-50"
+            className="rounded-xl font-dmsans border-[#ff6f00]/30 px-6 text-sm font-semibold text-[#ff6f00] hover:bg-[#ff6f00] hover:text-white hover:border-[#ff6f00] transition-all duration-200 shadow-sm disabled:opacity-50"
           >
             {isFetching ? (
-              <span className="flex items-center gap-2">
+              <span className="flex font-dmsans items-center gap-2">
                 <span className="h-3.5 w-3.5 rounded-full border-2 border-current border-t-transparent animate-spin" />
                 Loading...
               </span>

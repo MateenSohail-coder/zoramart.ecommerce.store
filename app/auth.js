@@ -53,50 +53,75 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
   callbacks: {
     async signIn({ user, account, profile }) {
-      if (account.provider === "google") {
-        try {
-          await connectDB();
+    if (account?.provider === "google") {
+      try {
+        await connectDB();
 
-          const existUser = await User.findOne({
-            googleId: account.providerAccountId,
+        let existingUser = await User.findOne({
+          googleId: account.providerAccountId.toString(),
+        });
+
+        // If user doesn't exist by googleId, check by email
+        if (!existingUser && user.email) {
+          existingUser = await User.findOne({
+            email: user.email,
           });
 
-          if (!existUser) {
-            const newUser = await User.create({
-              name: profile.name || profile.family_name,
-              email: user.email,
-              image: user.image,
-              role: "buyer",
-              googleId: account.providerAccountId.toString(),
-              isVerified: profile.email_verified || false,
-              isBlocked: false,
-            });
+          // Link Google account to existing email account
+          if (existingUser) {
+            existingUser.googleId = account.providerAccountId.toString();
 
-            user.id = newUser._id.toString();
-            user.name = newUser.name;
-            user.role = newUser.role;
-            user.isVerified = newUser.isVerified;
-            user.isBlocked = newUser.isBlocked;
+            if (!existingUser.image && user.image) {
+              existingUser.image = user.image;
+            }
 
-            return false;
+            await existingUser.save();
           }
-
-          user.id = existUser._id.toString();
-          user.name = existUser.name;
-          user.role = existUser.role;
-          user.isVerified = existUser.isVerified;
-          user.isBlocked = existUser.isBlocked;
-
-          if (existUser.isBlocked) {
-            return "/api/auth/signin?error=OAuthCallbackError";
-          }
-
-          return true;
-        } catch (error) {
-          console.error("Error during signIn callback:", error);
-          return false;
         }
+
+        // Create new user if still not found
+        if (!existingUser) {
+          const newUser = await User.create({
+            name:
+              profile?.name ||
+              user?.name ||
+              profile?.given_name ||
+              "Google User",
+            email: user.email,
+            image: user.image,
+            role: "buyer",
+            googleId: account.providerAccountId.toString(),
+            isVerified: profile?.email_verified ?? true,
+            isBlocked: false,
+          });
+
+          user.id = newUser._id.toString();
+          user.name = newUser.name;
+          user.role = newUser.role;
+          user.isVerified = newUser.isVerified;
+          user.isBlocked = newUser.isBlocked;
+
+          return true; // Allow sign in
+        }
+
+        // Prevent blocked users from signing in
+        if (existingUser.isBlocked) {
+          return "/api/auth/signin?error=AccountBlocked";
+        }
+
+        // Attach DB user data to session user
+        user.id = existingUser._id.toString();
+        user.name = existingUser.name;
+        user.role = existingUser.role;
+        user.isVerified = existingUser.isVerified;
+        user.isBlocked = existingUser.isBlocked;
+
+        return true;
+      } catch (error) {
+        console.error("Google sign-in error:", error);
+        return false;
       }
+    }
 
       return true;
     },
@@ -112,9 +137,23 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.isBlocked = Boolean(user.isBlocked);
       }
       if (trigger === "update" && session) {
+        if (session.name) token.name = session.name;
+        if (session.image) token.image = session.image;
         token.isVerified = Boolean(session.isVerified);
-        token.isBlocked = Boolean(session.isBoolean);
+        token.isBlocked = Boolean(session.isBlocked);
         return token;
+      }
+      if (token?.id) {
+        try {
+          await connectDB();
+          const dbUser = await User.findById(token.id).select("isBlocked isVerified").lean();
+          if (dbUser) {
+            token.isBlocked = Boolean(dbUser.isBlocked);
+            token.isVerified = Boolean(dbUser.isVerified);
+          }
+        } catch {
+          // ignore — use existing token values
+        }
       }
       return token;
     },

@@ -6,7 +6,12 @@ export async function POST(req) {
   const body = await req.json();
   await connectDB();
   try {
-    const newReview = await Review.create(body);
+    const payload = {
+      ...body,
+      product: body.product || body.productId,
+      user: body.user || body.userId,
+    };
+    const newReview = await Review.create(payload);
     return NextResponse.json(
       {
         message: "Review successfully created",
@@ -23,10 +28,35 @@ export async function POST(req) {
     );
   }
 }
-export async function GET() {
+export async function GET(req) {
   await connectDB();
   try {
-    const reviews = await Review.find({});
+    const { searchParams } = new URL(req.url);
+    const productId = searchParams.get("productId");
+
+    // If seller is logged in and productId is not explicitly provided,
+    // show only reviews for products owned by that seller.
+    // Admin sees all.
+    const { getAuthUser } = await import("@/lib/api-auth");
+    const authUser = await getAuthUser();
+
+    const baseFilter = productId ? { product: productId } : {};
+
+    if (authUser?.role === "seller" && !productId) {
+      // Find products owned by this seller and only return their reviews.
+      const Product = (await import("@/models/product")).default;
+      const sellerProducts = await Product.find({ seller: authUser.id })
+        .select("_id")
+        .lean();
+      const productIds = sellerProducts.map((p) => p._id);
+      baseFilter.product = { $in: productIds };
+    }
+
+    const reviews = await Review.find(baseFilter)
+      .populate("user", "name image")
+      .populate("product", "name slug images")
+      .sort({ createdAt: -1 });
+
     return NextResponse.json(reviews);
   } catch {
     return NextResponse.json(
@@ -37,6 +67,7 @@ export async function GET() {
     );
   }
 }
+
 export async function DELETE(req) {
   const params = new URL(req.url);
   const id = params.searchParams.get("id");
