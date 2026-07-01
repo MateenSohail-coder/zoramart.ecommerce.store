@@ -29,13 +29,13 @@ export default function DashboardShell({ role, children }) {
 
   React.useEffect(() => {
     if (!shouldRedirect) return;
-    window.location.href = "/login";
+    window.location.href = "/otp-verification";
   }, [shouldRedirect]);
 
   if (shouldRedirect) {
     return (
       <div className="flex h-screen items-center justify-center font-dmsans">
-        <p className="text-sm text-muted-foreground">Redirecting to login...</p>
+        <p className="text-sm text-muted-foreground">Redirecting to verification...</p>
       </div>
     );
   }
