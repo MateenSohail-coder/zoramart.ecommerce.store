@@ -101,8 +101,12 @@ export async function GET(req) {
         subIds.push(categoryId);
         filter.category = { $in: subIds };
       } else {
-        // sub -> only that category
-        filter.category = categoryId;
+        // sub -> include products in this category AND its parent
+        const catIds = [categoryId];
+        if (selectedCategory?.parentCategory) {
+          catIds.push(selectedCategory.parentCategory);
+        }
+        filter.category = { $in: catIds };
       }
     }
 
