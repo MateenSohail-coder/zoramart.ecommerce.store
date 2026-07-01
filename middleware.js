@@ -16,15 +16,6 @@ const ROLECONFIG = {
   },
 };
 
-const PUBLIC_ROUTES = [
-  "/",
-  "/login",
-  "/signup",
-  "/otp-verification",
-  "/product",
-  "/categories",
-];
-
 export default async function middleware(req) {
   const pathname = req.nextUrl.pathname;
 
@@ -39,21 +30,6 @@ export default async function middleware(req) {
 
   const token = await getToken({ req, secret: process.env.AUTH_SECRET });
   const role = token?.role;
-
-  // Allow unverified users to access /otp-verification (don't bounce to dashboard)
-  const isOtpPage = pathname === "/otp-verification";
-
-  const isAuthPage =
-    pathname === "/login" ||
-    pathname === "/signup" ||
-    isOtpPage;
-
-  if (isAuthPage && token && !isOtpPage) {
-    const config = ROLECONFIG[role];
-    const url = req.nextUrl.clone();
-    url.pathname = config?.home || "/";
-    return NextResponse.redirect(url);
-  }
 
   const isProtectedRoute = Object.values(ROLECONFIG).some((cfg) =>
     cfg.allowedPrefixes.some((prefix) => pathname.startsWith(prefix)),
@@ -70,13 +46,6 @@ export default async function middleware(req) {
     const url = req.nextUrl.clone();
     url.pathname = "/error";
     url.searchParams.set("blocked", "true");
-    return NextResponse.redirect(url);
-  }
-
-  // Unverified users — redirect to OTP page (allow if already there)
-  if (isProtectedRoute && token && !token.isVerified && !isOtpPage) {
-    const url = req.nextUrl.clone();
-    url.pathname = "/otp-verification";
     return NextResponse.redirect(url);
   }
 
@@ -112,8 +81,5 @@ export const config = {
     "/cart/:path*",
     "/Checkout/:path*",
     "/checkout/:path*",
-    "/login",
-    "/signup",
-    "/otp-verification",
   ],
 };
