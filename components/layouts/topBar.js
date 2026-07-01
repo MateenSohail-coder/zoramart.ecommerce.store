@@ -1,8 +1,11 @@
 "use client";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import React from "react";
 
 export default function TopBar() {
+  const { data: session, status } = useSession();
+  const user = session?.user;
   return (
     <div className="bg-[#ff6f00] font-dmsans text-white text-xs">
       <div className="mx-auto flex max-w-screen-2xl items-center justify-between px-4 py-1 text-xs sm:px-6 lg:px-8 sm:text-sm">
@@ -22,14 +25,17 @@ export default function TopBar() {
           <Link href="/help" className="hover:underline">
             Help
           </Link>
-
-          <Link href="/login" className="hover:underline">
-            Login
-          </Link>
-
-          <Link href="/signup" className="font-medium hover:underline">
-            Sign Up
-          </Link>
+          {status === "authenticated" && user ? null : (
+            <>
+              {" "}
+              <Link href="/login" className="hover:underline">
+                Login
+              </Link>
+              <Link href="/signup" className="font-medium hover:underline">
+                Sign Up
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </div>
