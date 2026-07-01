@@ -93,13 +93,12 @@ export async function GET(req) {
         .lean();
 
       if (selectedCategory?.level === 1) {
-        // main -> include all products under any direct subcategory of this main
-        // NOTE: your schema supports 3 levels, but current UI uses main->sub only.
-        // If you have 3-level trees, this can be expanded.
+        // main -> include products in this category AND all subcategories
         const directSubs = await Category.find({ parentCategory: categoryId })
           .select("_id")
           .lean();
         const subIds = directSubs.map((c) => c._id);
+        subIds.push(categoryId);
         filter.category = { $in: subIds };
       } else {
         // sub -> only that category
