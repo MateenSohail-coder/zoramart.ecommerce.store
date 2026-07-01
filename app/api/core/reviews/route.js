@@ -1,15 +1,19 @@
 import { connectDB } from "@/lib/connectdb";
+import { getAuthUser, unauthorized } from "@/lib/api-auth";
 import Review from "@/models/reviews";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
+  const user = await getAuthUser();
+  if (!user) return unauthorized();
+
   const body = await req.json();
   await connectDB();
   try {
     const payload = {
       ...body,
       product: body.product || body.productId,
-      user: body.user || body.userId,
+      user: user.id,
     };
     const newReview = await Review.create(payload);
     return NextResponse.json(
@@ -69,6 +73,9 @@ export async function GET(req) {
 }
 
 export async function DELETE(req) {
+  const user = await getAuthUser();
+  if (!user) return unauthorized();
+
   const params = new URL(req.url);
   const id = params.searchParams.get("id");
   await connectDB();
@@ -89,6 +96,9 @@ export async function DELETE(req) {
   }
 }
 export async function PATCH(req) {
+  const user = await getAuthUser();
+  if (!user) return unauthorized();
+
   try {
     await connectDB();
     const body = await req.json();

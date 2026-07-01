@@ -73,6 +73,13 @@ export default async function middleware(req) {
     return NextResponse.redirect(url);
   }
 
+  // Unverified users — redirect to OTP page (allow if already there)
+  if (isProtectedRoute && token && !token.isVerified && !isOtpPage) {
+    const url = req.nextUrl.clone();
+    url.pathname = "/otp-verification";
+    return NextResponse.redirect(url);
+  }
+
   if (isProtectedRoute && token) {
     const config = ROLECONFIG[role];
 

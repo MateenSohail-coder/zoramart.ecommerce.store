@@ -65,18 +65,18 @@ export default function AdminAnalyticsPage() {
 
   const totalRevenue = payments.reduce(
     (sum, payment) =>
-      sum + (payment.amount || 0),
+      sum + (payment.amountPaid || payment.amount || 0),
     0
   );
 
   const pendingOrders = orders.filter(
     (order) =>
-      order.status?.toLowerCase() === "pending"
+      (order.orderStatus || order.status)?.toLowerCase() === "pending"
   ).length;
 
   const deliveredOrders = orders.filter(
     (order) =>
-      order.status?.toLowerCase() === "delivered"
+      (order.orderStatus || order.status)?.toLowerCase() === "delivered"
   ).length;
 
   const averageRating =

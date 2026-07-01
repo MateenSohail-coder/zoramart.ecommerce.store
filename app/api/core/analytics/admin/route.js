@@ -1,6 +1,8 @@
 import { connectDB } from "@/lib/connectdb";
+import { getAuthUser, unauthorized, requireRole } from "@/lib/api-auth";
 import Order from "@/models/order";
 import Payment from "@/models/payment";
+import { NextResponse } from "next/server";
 
 function toDateRangeDays(days) {
   const now = new Date();
@@ -11,6 +13,10 @@ function toDateRangeDays(days) {
 }
 
 export async function GET(req) {
+  const user = await getAuthUser();
+  if (!user) return unauthorized();
+  if (!requireRole(user, "admin")) return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+
   await connectDB();
 
   const { searchParams } = new URL(req.url);

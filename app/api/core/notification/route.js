@@ -1,8 +1,12 @@
 import { connectDB } from "@/lib/connectdb";
+import { getAuthUser, unauthorized } from "@/lib/api-auth";
 import Notification from "@/models/notification";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
+  const user = await getAuthUser();
+  if (!user) return unauthorized();
+
   const body = await req.json();
   await connectDB();
 
@@ -54,6 +58,9 @@ export async function GET(req) {
 }
 
 export async function DELETE(req) {
+  const user = await getAuthUser();
+  if (!user) return unauthorized();
+
   const params = new URL(req.url);
   const id = params.searchParams.get("id");
   await connectDB();
@@ -77,6 +84,9 @@ export async function DELETE(req) {
 }
 
 export async function PATCH(req) {
+  const user = await getAuthUser();
+  if (!user) return unauthorized();
+
   try {
     await connectDB();
     const body = await req.json();
