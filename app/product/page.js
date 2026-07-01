@@ -134,10 +134,10 @@ function ProductDetailContent() {
           <div className="flex items-center w-full gap-4 mt-2 p-2 bg-slate-50 rounded-md dark:bg-black">
             <img
               src={
-                product?.images ||
+                product?.images[0] ||
                 "https://images.unsplash.com/photo-1587440871875-191322ee64b0?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8d2ViJTIwZGVzaWdufGVufDB8fDB8fHww"
               }
-              alt="Wireless Headphones"
+              alt={product.name}
               className="w-16 h-16 object-cover rounded-md border"
             />
             <div>
