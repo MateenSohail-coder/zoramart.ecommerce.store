@@ -64,11 +64,14 @@ function CategoryPageContent() {
     (c) => String(c.parentCategory) === String(parentId || effectiveCategoryId),
   );
 
-  const { data, isLoading, isFetching } = useGetProductsQuery({
-    categoryId: effectiveCategoryId,
-    page,
-    limit,
-  });
+  const { data, isLoading, isFetching } = useGetProductsQuery(
+    {
+      categoryId: effectiveCategoryId,
+      page,
+      limit,
+    },
+    { skip: !effectiveCategoryId },
+  );
 
   const products = data?.products || [];
 
