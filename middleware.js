@@ -28,7 +28,11 @@ export default async function middleware(req) {
     return NextResponse.next();
   }
 
-  const token = await getToken({ req, secret: process.env.AUTH_SECRET });
+  const token = await getToken({
+    req,
+    secret: process.env.AUTH_SECRET,
+    secureCookie: process.env.NODE_ENV === "production" || !!process.env.VERCEL,
+  });
   const role = token?.role;
 
   const isProtectedRoute = Object.values(ROLECONFIG).some((cfg) =>
