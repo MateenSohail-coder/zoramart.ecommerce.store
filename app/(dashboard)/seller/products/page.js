@@ -127,7 +127,7 @@ export default function SellerProductsPage() {
                   key: "name",
                   label: "Name",
                   render: (row) => (
-                    <span className="font-medium text-gray-900">
+                    <span className="font-medium text-black dark:text-white">
                       {row.name}
                     </span>
                   ),
@@ -153,7 +153,9 @@ export default function SellerProductsPage() {
                   key: "price",
                   label: "Price",
                   render: (row) => (
-                    <span className="text-gray-700">Rs {row.price ?? "-"}</span>
+                    <span className="text-black dark:text-white">
+                      Rs {row.price ?? "-"}
+                    </span>
                   ),
                 },
 

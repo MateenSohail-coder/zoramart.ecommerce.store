@@ -118,7 +118,9 @@ export default function SellerInventoryPage() {
                   key: "price",
                   label: "Price",
                   render: (row) => (
-                    <span className="text-gray-700">Rs {row.price}</span>
+                    <span className="text-black dark:text-white">
+                      Rs {row.price}
+                    </span>
                   ),
                 },
 
