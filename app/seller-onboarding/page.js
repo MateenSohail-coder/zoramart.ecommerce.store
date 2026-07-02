@@ -17,8 +17,9 @@ import {
 const defaultForm = {
   storeName: "",
   description: "",
-  logo: "https://placehold.co",
-  banner: "https://placehold.co",
+  logo: "https://res.cloudinary.com/e9wwztga/image/upload/v1782984835/zoramart/lv5yiqsqnix9vrtrj8pm.jpg",
+  banner:
+    "https://res.cloudinary.com/e9wwztga/image/upload/v1782985306/zoramart/eft2bvza3zfivjsp8qoq.jpg",
   businessAddress: {
     street: "",
     city: "",

@@ -93,7 +93,7 @@ function SectionTitle({ icon: Icon, title, desc }) {
 
 export default function SellerShopSettingsPage() {
   const router = useRouter();
-  const { data: session, update: updateSession, status } = useSession();
+  const { data: session, update: updateSession } = useSession();
   const user = session?.user;
 
   const { data: sellerInfoDoc, isLoading } = useGetSellerInfosQuery();
@@ -138,7 +138,8 @@ export default function SellerShopSettingsPage() {
       const url = await uploadImage(file);
       setForm((s) => ({ ...s, [field]: url }));
       await updateSellerInfoField({ id: null, [field]: url }).unwrap();
-
+      await updateUser({ id: user.id, image: url }).unwrap();
+      await updateSession({ image: url });
       const label = field === "logo" ? "Logo" : "Banner";
       toast.success(`${label} uploaded and saved`);
     } catch {
