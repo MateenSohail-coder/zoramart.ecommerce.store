@@ -248,7 +248,7 @@ export default function SellerShopSettingsPage() {
           <CardContent className="relative px-6 pb-6 pt-0">
             <div className="-mt-14 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div className="flex items-end gap-4">
-                <Avatar className="h-28 w-28 rounded-sm">
+                <Avatar className="h-28 w-28 z-30 rounded-sm">
                   {form.logo ? (
                     <AvatarImage
                       src={form.logo}
