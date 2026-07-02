@@ -12,25 +12,25 @@ import Image from "next/image";
 const items = [
   {
     img: "https://img.lazcdn.com/us/domino/8c59ed80-afb4-48c9-b1d2-11766f1be63e_PK-1976-688.jpg_2200x2200q80.jpg_.avif",
-    title: "Autumn",
+    title: "Offer 30% off",
     desc: "A picturesque path winding through a dense forest adorned with vibrant autumn foliage.",
     sliderName: "autumn",
   },
   {
     img: "https://img.lazcdn.com/us/domino/53d06a17-a79e-42df-8545-b22e1dada10a_PK-1976-688.jpg_2200x2200q80.jpg_.avif",
-    title: "Bridge",
+    title: "Offer 50% off",
     desc: "A breathtaking view of a city illuminated by countless lights, showcasing the vibrant and bustling nightlife.",
     sliderName: "bridge",
   },
   {
     img: "https://img.lazcdn.com/us/domino/cd3d3612-43ee-47da-b49a-ff03d87ffcb8_PK-1976-688.jpg_2200x2200q80.jpg_.avif",
-    title: "Mountains View",
+    title: "Offer 30% off",
     desc: "A serene lake reflecting the surrounding mountains and trees, creating a mirror-like surface.",
     sliderName: "mountains",
   },
   {
     img: "https://img.lazcdn.com/us/domino/8c2b123f-d24e-44d0-8604-297b686a1526_PK-1976-688.jpg_2200x2200q80.jpg_.avif",
-    title: "Foggy",
+    title: "Offer 10% off",
     sliderName: "foggy",
     desc: "A stunning foggy view over the foresh, with the sun casting a golden glow across the forest",
   },

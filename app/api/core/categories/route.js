@@ -38,7 +38,9 @@ export async function GET(req) {
 
     // All categories (for admin panel tree view)
     if (all === "true") {
-      const allCategories = await Category.find({}).sort({ level: 1, name: 1 }).lean();
+      const allCategories = await Category.find({})
+        .sort({ level: 1, name: 1 })
+        .lean();
       return NextResponse.json(allCategories);
     }
 

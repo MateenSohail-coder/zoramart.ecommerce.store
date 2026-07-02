@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { connectDB } from "@/lib/connectdb";
 import {
   getAuthUser,
@@ -87,22 +88,35 @@ export async function GET(req) {
     const filter = {};
 
     if (categoryId) {
-      // Determine if categoryId is main (level 1) or sub (level 2/3)
-      const selectedCategory = await Category.findById(categoryId)
+      const catObjectId = new mongoose.Types.ObjectId(categoryId);
+
+      const selectedCategory = await Category.findById(catObjectId)
         .select("level parentCategory")
         .lean();
 
-      if (selectedCategory?.level === 1) {
-        // main -> include products in this category AND all subcategories
-        const directSubs = await Category.find({ parentCategory: categoryId })
+      // Recursively collect ALL descendant category ObjectIds
+      const collectDescendants = async (parentId) => {
+        const children = await Category.find({ parentCategory: parentId })
           .select("_id")
           .lean();
-        const subIds = directSubs.map((c) => c._id);
-        subIds.push(categoryId);
-        filter.category = { $in: subIds };
+        const ids = children.map((c) => c._id);
+        for (const child of children) {
+          const grandchildIds = await collectDescendants(child._id);
+          ids.push(...grandchildIds);
+        }
+        return ids;
+      };
+
+      if (selectedCategory?.level === 1) {
+        // main -> include products in this category AND all descendants
+        const descendantIds = await collectDescendants(catObjectId);
+        descendantIds.push(catObjectId);
+        filter.category = { $in: descendantIds };
       } else {
-        // sub -> include products in this category AND its parent
-        const catIds = [categoryId];
+        // sub -> include products in this category, all its descendants, AND its parent
+        const catIds = [catObjectId];
+        const descendantIds = await collectDescendants(catObjectId);
+        catIds.push(...descendantIds);
         if (selectedCategory?.parentCategory) {
           catIds.push(selectedCategory.parentCategory);
         }
