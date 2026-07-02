@@ -10,7 +10,7 @@ import ProductCardSkeleton from "../ui/productCardSkeleton";
 
 export default function HomeProducts() {
   const [page, setPage] = useState(1);
-  const limit = 8;
+  const limit = 10;
 
   // Keep accumulated items across pages
   const [items, setItems] = useState([]);
