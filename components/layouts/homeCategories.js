@@ -8,70 +8,70 @@ const categories = [
   {
     name: "Automotive & Motorbike",
     slug: "automotive-and-motorbike",
-    href: "/category/automotive-and-motorbike",
+    href: "/automotive-and-motorbike?id=6a42437193252eba571dddaf&main=true&parentId=6a42437193252eba571dddaf",
     image:
       "https://images.unsplash.com/photo-1553440569-bcc63803a83d?w=800&auto=format&fit=crop&q=60",
   },
   {
     name: "Groceries & Pets",
     slug: "groceries-and-pets",
-    href: "/category/groceries-and-pets",
+    href: "/groceries-and-pets?id=6a42437193252eba571dddab&main=true&parentId=6a42437193252eba571dddab",
     image:
       "https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&auto=format&fit=crop&q=60",
   },
   {
     name: "Health & Beauty",
     slug: "health-and-beauty",
-    href: "/category/health-and-beauty",
+    href: "/health-and-beauty?id=6a42437193252eba571dddaa&main=true&parentId=6a42437193252eba571dddaa",
     image:
       "https://images.unsplash.com/photo-1556911073-52527ac43761?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGhlYWx0aCUyMGFuZCUyMGJlYXV0eXxlbnwwfHwwfHx8MA%3D%3D",
   },
   {
     name: "Home & Lifestyle",
     slug: "home-and-lifestyle",
-    href: "/category/home-and-lifestyle",
+    href: "/home-and-lifestyle?id=6a42437193252eba571ddda9&main=true&parentId=6a42437193252eba571ddda9",
     image:
       "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&auto=format&fit=crop&q=60",
   },
   {
     name: "Men's Fashion",
     slug: "mens-fashion",
-    href: "/category/mens-fashion",
+    href: "/mens-fashion?id=6a42437193252eba571ddda7&main=true&parentId=6a42437193252eba571ddda7",
     image:
       "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=800&auto=format&fit=crop&q=60",
   },
   {
     name: "Mother & Baby",
     slug: "mother-and-baby",
-    href: "/category/mother-and-baby",
+    href: "/mother-and-baby?id=6a42437193252eba571dddae&main=true&parentId=6a42437193252eba571dddae",
     image:
       "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=800&auto=format&fit=crop&q=60",
   },
   {
     name: "Phones & Tablets",
     slug: "phones-and-tablets",
-    href: "/category/phones-and-tablets",
+    href: "/phones-and-tablets?id=6a42437193252eba571ddda6&main=true&parentId=6a42437193252eba571ddda6",
     image:
       "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop&q=60",
   },
   {
     name: "Sports & Outdoor",
     slug: "sports-and-outdoor",
-    href: "/category/sports-and-outdoor",
+    href: "/sports-and-outdoor?id=6a42437193252eba571dddac&main=true&parentId=6a42437193252eba571dddac",
     image:
       "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&auto=format&fit=crop&q=60",
   },
   {
     name: "Watches & Jewellery",
     slug: "watches-bags-and-jewellery",
-    href: "/category/watches-bags-and-jewellery",
+    href: "/watches-bags-and-jewellery?id=6a42437193252eba571dddad&main=true&parentId=6a42437193252eba571dddad",
     image:
       "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=800&auto=format&fit=crop&q=60",
   },
   {
     name: "Women's Fashion",
     slug: "womens-fashion",
-    href: "/category/womens-fashion",
+    href: "/womens-fashion?id=6a42437193252eba571ddda8&main=true&parentId=6a42437193252eba571ddda8",
     image:
       "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&auto=format&fit=crop&q=60",
   },
