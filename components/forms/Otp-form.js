@@ -65,11 +65,9 @@ export function OtpVerificationForm({ id }) {
       if (apiResponse.status === 200) {
         setisCorrect(true);
         toast.success("Verification successful!");
-        await update({ isVerified: true });
-        // Brief delay so the session cookie propagates before navigation
-        await new Promise((r) => setTimeout(r, 400));
-        window.location.href =
-          session?.user.role === "seller" ? "/seller-onboarding" : "/";
+        const userRole = session?.user?.role;
+        update({ isVerified: true });
+        window.location.href = "/seller-onboarding";
       }
     } catch {
       toast.error("somthing wrong");
