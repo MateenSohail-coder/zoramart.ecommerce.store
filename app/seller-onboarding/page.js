@@ -54,8 +54,12 @@ export default function SellerOnboardingPage() {
     const nextForm = {
       storeName: sellerInfoDoc.storeName || "",
       description: sellerInfoDoc.description || "",
-      logo: sellerInfoDoc.logo || null,
-      banner: sellerInfoDoc.banner || null,
+      logo:
+        sellerInfoDoc.logo ||
+        "https://res.cloudinary.com/e9wwztga/image/upload/v1782984835/zoramart/lv5yiqsqnix9vrtrj8pm.jpg",
+      banner:
+        sellerInfoDoc.banner ||
+        "https://res.cloudinary.com/e9wwztga/image/upload/v1782985306/zoramart/eft2bvza3zfivjsp8qoq.jpg",
       businessAddress: {
         street: sellerInfoDoc.businessAddress?.street || "",
         city: sellerInfoDoc.businessAddress?.city || "",
