@@ -42,7 +42,7 @@ export default function ProductCard({
           <div className="relative aspect-square bg-muted">
             {/* displayImage */}
             <Image
-              src={image}
+              src="/productbox.jpeg"
               alt={name}
               fill
               sizes="(max-width: 768px) 50vw, 25vw"
