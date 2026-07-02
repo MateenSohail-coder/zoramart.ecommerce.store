@@ -162,17 +162,21 @@ export default function Navbar() {
                 <DropdownMenuLabel className="px-3 py-2">
                   <div className="flex items-center gap-3">
                     <Avatar className="h-11 w-11">
-                      <AvatarImage src={user.image || undefined} />
+                      <AvatarImage src={user?.image || undefined} />
                       <AvatarFallback className="bg-[#ff6f00] text-white">
                         {initials}
                       </AvatarFallback>
                     </Avatar>
-                    <div>
+                    <div className="overflow-hidden">
+                      {" "}
+                      {/* Added overflow-hidden */}
                       <p className="text-sm font-semibold text-[#2d3235] dark:text-white">
-                        {user.name || "User"}
+                        {user?.name || "User"}
                       </p>
-                      <p className="text-xs text-black/50 dark:text-white/45">
-                        {user.email || ""}
+                      <p className="text-xs text-black/50 dark:text-white/45 truncate">
+                        {" "}
+                        {/* Added truncate */}
+                        {user?.email || ""}
                       </p>
                     </div>
                   </div>

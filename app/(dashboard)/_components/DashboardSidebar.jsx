@@ -399,11 +399,15 @@ export default function DashboardSidebar({ role = "seller", children }) {
                     {initials}
                   </AvatarFallback>
                 </Avatar>
-                <div>
+                <div className="overflow-hidden">
+                  {" "}
+                  {/* Added overflow-hidden */}
                   <p className="text-sm font-semibold text-[#2d3235] dark:text-white">
                     {user?.name || "User"}
                   </p>
-                  <p className="text-xs text-black/50 dark:text-white/45">
+                  <p className="text-xs text-black/50 dark:text-white/45 truncate">
+                    {" "}
+                    {/* Added truncate */}
                     {user?.email || ""}
                   </p>
                 </div>
