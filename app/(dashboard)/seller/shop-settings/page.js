@@ -93,7 +93,8 @@ function SectionTitle({ icon: Icon, title, desc }) {
 
 export default function SellerShopSettingsPage() {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { data: session, update: updateSession } = useSession();
+  const user = session?.user;
 
   const { data: sellerInfoDoc, isLoading } = useGetSellerInfosQuery();
   const [upsertSellerInfo, { isLoading: saving }] = useAddSellerInfoMutation();
@@ -107,8 +108,8 @@ export default function SellerShopSettingsPage() {
   const [form, setForm] = React.useState({
     storeName: "",
     description: "",
-    logo: "",
-    banner: "",
+    logo: null,
+    banner: null,
     businessAddress: { street: "", city: "", state: "", country: "Pakistan" },
     phone: "",
     cnicOrTaxId: "",
@@ -119,7 +120,6 @@ export default function SellerShopSettingsPage() {
       branchCode: "",
     },
   });
-
   const uploadImage = async (file) => {
     const fd = new FormData();
     fd.append("files", file);
@@ -138,6 +138,8 @@ export default function SellerShopSettingsPage() {
       const url = await uploadImage(file);
       setForm((s) => ({ ...s, [field]: url }));
       await updateSellerInfoField({ id: null, [field]: url }).unwrap();
+      await updateUser({ id: user.id, image: url }).unwrap();
+      await updateSession({ image: url });
       const label = field === "logo" ? "Logo" : "Banner";
       toast.success(`${label} uploaded and saved`);
     } catch {
@@ -151,12 +153,11 @@ export default function SellerShopSettingsPage() {
   React.useEffect(() => {
     if (status !== "authenticated") return;
     if (!sellerInfoDoc) return;
-
     setForm({
       storeName: sellerInfoDoc.storeName || "",
       description: sellerInfoDoc.description || "",
-      logo: sellerInfoDoc.logo || "",
-      banner: sellerInfoDoc.banner || "",
+      logo: sellerInfoDoc.logo || null,
+      banner: sellerInfoDoc.banner || null,
       businessAddress: {
         street: sellerInfoDoc.businessAddress?.street || "",
         city: sellerInfoDoc.businessAddress?.city || "",
@@ -229,23 +230,25 @@ export default function SellerShopSettingsPage() {
           <div className="relative h-48 w-full bg-transparent bg-cover bg-center">
             <div className="absolute inset-0 bg-black/10" />
 
-            {form.banner != "https://placehold.co" && (
+            {form.banner ? (
               <img
                 src={form.banner}
                 alt="banner"
-                className="w-full h-full bg-cover z-20"
+                className="absolute inset-0 z-20 h-full w-full object-cover"
               />
-            )}
+            ) : null}
           </div>
 
           <CardContent className="relative px-6 pb-6 pt-0">
             <div className="-mt-14 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div className="flex items-end gap-4">
                 <Avatar className="h-28 w-28 rounded-sm">
-                  <AvatarImage
-                    src={form.logo || undefined}
-                    alt={form.storeName || "Seller"}
-                  />
+                  {form.logo ? (
+                    <AvatarImage
+                      src={form.logo}
+                      alt={form.storeName || "Seller"}
+                    />
+                  ) : null}
                   <AvatarFallback className="rounded-sm text-sm font-semibold">
                     {initials}
                   </AvatarFallback>
@@ -370,28 +373,6 @@ export default function SellerShopSettingsPage() {
                       />
                     </div>
                   </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Logo URL</label>
-                  <Input
-                    value={form.logo}
-                    onChange={(e) =>
-                      setForm((s) => ({ ...s, logo: e.target.value }))
-                    }
-                    placeholder="Paste logo URL"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Banner URL</label>
-                  <Input
-                    value={form.banner}
-                    onChange={(e) =>
-                      setForm((s) => ({ ...s, banner: e.target.value }))
-                    }
-                    placeholder="Paste banner URL"
-                  />
                 </div>
               </div>
 

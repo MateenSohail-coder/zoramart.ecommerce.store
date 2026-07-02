@@ -97,7 +97,7 @@ export default function SellerOnboardingPage() {
     await upsertSellerInfo(payload).unwrap();
 
     // After onboarding completed, go to seller dashboard.
-    router.push("/seller");
+    router.push("/seller/overview");
   }
 
   if (status === "loading") {

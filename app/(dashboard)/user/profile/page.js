@@ -316,17 +316,6 @@ export default function UserProfilePage() {
             </CardContent>
           </Card>
 
-          <Card className="rounded-sm">
-            <CardHeader>
-              <CardTitle>Security</CardTitle>
-            </CardHeader>
-
-            <CardContent className="space-y-3">
-              <Button variant="outline" className="w-full rounded-sm">
-                Change Password
-              </Button>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </div>
