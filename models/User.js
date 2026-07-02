@@ -16,6 +16,8 @@ const userSchema = new mongoose.Schema(
     },
     image: {
       type: String,
+      default:
+        "https://res.cloudinary.com/e9wwztga/image/upload/v1782984835/zoramart/lv5yiqsqnix9vrtrj8pm.jpg",
     },
     role: {
       type: String,

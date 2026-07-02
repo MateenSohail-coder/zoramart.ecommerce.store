@@ -19,11 +19,13 @@ const sellerInfoSchema = new mongoose.Schema(
     },
     logo: {
       type: String,
-      default: "https://placehold.co",
+      default:
+        "https://res.cloudinary.com/e9wwztga/image/upload/v1782984835/zoramart/lv5yiqsqnix9vrtrj8pm.jpg",
     },
     banner: {
       type: String,
-      default: "https://placehold.co",
+      default:
+        "https://res.cloudinary.com/e9wwztga/image/upload/v1782985306/zoramart/eft2bvza3zfivjsp8qoq.jpg",
     },
     businessAddress: {
       street: { type: String, required: true },
