@@ -93,7 +93,7 @@ function SectionTitle({ icon: Icon, title, desc }) {
 
 export default function SellerShopSettingsPage() {
   const router = useRouter();
-  const { data: session, update: updateSession } = useSession();
+  const { data: session, update: updateSession, status } = useSession();
   const user = session?.user;
 
   const { data: sellerInfoDoc, isLoading } = useGetSellerInfosQuery();
