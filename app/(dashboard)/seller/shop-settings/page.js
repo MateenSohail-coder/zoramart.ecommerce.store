@@ -108,8 +108,9 @@ export default function SellerShopSettingsPage() {
   const [form, setForm] = React.useState({
     storeName: "",
     description: "",
-    logo: null,
-    banner: null,
+    logo: "https://res.cloudinary.com/e9wwztga/image/upload/v1782985306/zoramart/eft2bvza3zfivjsp8qoq.jpg",
+    banner:
+      "https://res.cloudinary.com/e9wwztga/image/upload/v1782984835/zoramart/lv5yiqsqnix9vrtrj8pm.jpg",
     businessAddress: { street: "", city: "", state: "", country: "Pakistan" },
     phone: "",
     cnicOrTaxId: "",
@@ -138,6 +139,8 @@ export default function SellerShopSettingsPage() {
       const url = await uploadImage(file);
       setForm((s) => ({ ...s, [field]: url }));
       await updateSellerInfoField({ id: null, [field]: url }).unwrap();
+       await updateUser({ id: user.id, image: url }).unwrap();
+       await updateSession({ image: url });
 
       const label = field === "logo" ? "Logo" : "Banner";
       toast.success(`${label} uploaded and saved`);
@@ -155,8 +158,12 @@ export default function SellerShopSettingsPage() {
     setForm({
       storeName: sellerInfoDoc.storeName || "",
       description: sellerInfoDoc.description || "",
-      logo: sellerInfoDoc.logo || null,
-      banner: sellerInfoDoc.banner || null,
+      logo:
+        sellerInfoDoc.logo ||
+        "https://res.cloudinary.com/e9wwztga/image/upload/v1782985306/zoramart/eft2bvza3zfivjsp8qoq.jpg",
+      banner:
+        sellerInfoDoc.banner ||
+        "https://res.cloudinary.com/e9wwztga/image/upload/v1782984835/zoramart/lv5yiqsqnix9vrtrj8pm.jpg",
       businessAddress: {
         street: sellerInfoDoc.businessAddress?.street || "",
         city: sellerInfoDoc.businessAddress?.city || "",
