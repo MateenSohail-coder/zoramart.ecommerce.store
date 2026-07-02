@@ -68,7 +68,8 @@ export function OtpVerificationForm({ id }) {
         await update({ isVerified: true });
         // Brief delay so the session cookie propagates before navigation
         await new Promise((r) => setTimeout(r, 400));
-        window.location.href = session.user.role === "seller" ? "/" : "/";
+        window.location.href =
+          session?.user.role === "seller" ? "/seller-onboarding" : "/";
       }
     } catch {
       toast.error("somthing wrong");
